@@ -48,5 +48,4 @@ func main() {
 		fmt.Println("Você não selecionou uma opção válida")
 		main()
 	}
-
 }

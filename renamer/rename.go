@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
@@ -55,6 +56,9 @@ func SingleRenamer(caminho, novoNome string) (bool, error) {
 	if e != nil {
 		return false, e
 	}
+
+	//TODO: Perguntar ao usuário se ele deseja abrir o explorador
+	exec.Command("xdg-open", base).Run()
 
 	return true, nil
 }
