@@ -13,6 +13,7 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 	files, e := ioutil.ReadDir(caminho)
 
 	//TODO: Fazer a listagem dos arquivos a serem renomeados
+	//TODO: Opção de ignorar arquivos de determinadas extensões
 
 	if e != nil {
 		return false, e
@@ -37,5 +38,23 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 		}
 		contador++
 	}
+
+	//TODO: Opção de abrir o explorador de arquivos (Ambas as funções)
+
+	return true, nil
+}
+
+// SingleRenamer - renomeia um único arquivo
+func SingleRenamer(caminho, novoNome string) (bool, error) {
+	base := filepath.Dir(caminho)
+	ext := filepath.Ext(caminho)
+	novoArquivo := fmt.Sprintf("%s/%s%s", base, novoNome, ext)
+
+	e := os.Rename(caminho, novoArquivo)
+
+	if e != nil {
+		return false, e
+	}
+
 	return true, nil
 }
