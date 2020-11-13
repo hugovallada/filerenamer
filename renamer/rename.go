@@ -12,6 +12,8 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 	contador := 0
 	files, e := ioutil.ReadDir(caminho)
 
+	//TODO: Fazer a listagem dos arquivos a serem renomeados
+
 	if e != nil {
 		return false, e
 	}
@@ -23,7 +25,7 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 		caminhoArquivo := fmt.Sprintf("%s/%s", caminho, file.Name())
 
 		if novoNome == "" {
-			arquivoModificado = fmt.Sprintf("%s/%d/%s", caminho, contador, ext)
+			arquivoModificado = fmt.Sprintf("%s/%04d%s", caminho, contador, ext)
 		} else {
 			arquivoModificado = fmt.Sprintf("%s/%d-%s%s", caminho, contador, novoNome, ext)
 		}

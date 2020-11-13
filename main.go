@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/hugovallada/filerenamer/renamer"
@@ -27,7 +28,7 @@ func main() {
 		fmt.Println("Qual o nome base do arquivos ? Deixe em branco para utilizar um contador")
 		novoNome, _ = reader.ReadString('\n')
 
-		caminho = strings.TrimSpace(caminho)
+		caminho, _ = filepath.Abs(strings.TrimSpace(caminho))
 		novoNome = strings.TrimSpace(novoNome)
 
 		renamer.BulkRenamer(caminho, novoNome)
