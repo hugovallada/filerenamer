@@ -43,8 +43,7 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 		contador++
 	}
 
-	//TODO: Opção de abrir o explorador de arquivos (Ambas as funções)
-	openExplorer(caminho)
+	startExplorerOpt(caminho)
 
 	return true, nil
 }
@@ -61,17 +60,12 @@ func SingleRenamer(caminho, novoNome string) (bool, error) {
 		return false, e
 	}
 
-	//TODO: Perguntar ao usuário se ele deseja abrir o explorador
-	opt := startExplorerOpt()
-
-	if opt {
-		openExplorer(base)
-	}
+	startExplorerOpt(base)
 
 	return true, nil
 }
 
-func startExplorerOpt() bool {
+func startExplorerOpt(caminho string) {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Println("Deseja abrir o explorer ? (y/n)")
@@ -80,9 +74,8 @@ func startExplorerOpt() bool {
 	opt = strings.TrimSpace(strings.ToLower(opt))
 
 	if opt == "y" {
-		return true
+		openExplorer(caminho)
 	}
-	return false
 }
 
 func openExplorer(caminho string) {
