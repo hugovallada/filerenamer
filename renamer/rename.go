@@ -6,6 +6,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 )
 
 // BulkRenamer - função para renomear diversos arquivos de uma vez
@@ -41,6 +42,7 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 	}
 
 	//TODO: Opção de abrir o explorador de arquivos (Ambas as funções)
+	openExplorer(caminho)
 
 	return true, nil
 }
@@ -58,7 +60,20 @@ func SingleRenamer(caminho, novoNome string) (bool, error) {
 	}
 
 	//TODO: Perguntar ao usuário se ele deseja abrir o explorador
-	exec.Command("xdg-open", base).Run()
+	//FIXME: Verificar o tipo do sistema do usuário - criar uma função extra ?
+	openExplorer(base)
 
 	return true, nil
+}
+
+func openExplorer(caminho string) {
+	if runtime.GOOS == "linux" {
+		exec.Command("xdg-open", caminho).Run()
+	} else if runtime.GOOS == "windows" {
+		exec.Command("explorer", caminho).Run()
+	} else if runtime.GOOS == "darwin" {
+		exec.Command("open", caminho).Run()
+	} else {
+		fmt.Println("Não foi possível iniciar o file explorer")
+	}
 }
