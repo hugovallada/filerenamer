@@ -1,12 +1,14 @@
 package renamer
 
 import (
+	"bufio"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strings"
 )
 
 // BulkRenamer - função para renomear diversos arquivos de uma vez
@@ -60,10 +62,27 @@ func SingleRenamer(caminho, novoNome string) (bool, error) {
 	}
 
 	//TODO: Perguntar ao usuário se ele deseja abrir o explorador
-	//FIXME: Verificar o tipo do sistema do usuário - criar uma função extra ?
-	openExplorer(base)
+	opt := startExplorerOpt()
+
+	if opt {
+		openExplorer(base)
+	}
 
 	return true, nil
+}
+
+func startExplorerOpt() bool {
+	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Println("Deseja abrir o explorer ? (y/n)")
+	opt, _ := reader.ReadString('\n')
+
+	opt = strings.TrimSpace(strings.ToLower(opt))
+
+	if opt == "y" {
+		return true
+	}
+	return false
 }
 
 func openExplorer(caminho string) {
