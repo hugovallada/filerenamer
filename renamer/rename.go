@@ -16,6 +16,8 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 	contador := 0
 	files, e := ioutil.ReadDir(caminho)
 
+	showAllFiles(files)
+
 	//TODO: Fazer a listagem dos arquivos a serem renomeados
 	//TODO: Opção de ignorar arquivos de determinadas extensões
 
@@ -88,4 +90,14 @@ func openExplorer(caminho string) {
 	} else {
 		fmt.Println("Não foi possível iniciar o file explorer")
 	}
+}
+
+func showAllFiles(files []os.FileInfo) {
+	var lista []string
+
+	for _, file := range files {
+		lista = append(lista, file.Name())
+	}
+
+	fmt.Println(lista)
 }
