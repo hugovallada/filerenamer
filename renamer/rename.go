@@ -18,7 +18,16 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 
 	showAllFiles(files)
 
-	//TODO: Fazer a listagem dos arquivos a serem renomeados
+	fmt.Println("Deseja continuar com a renomeação ?(s, sim ou deixe em branco para continuar)")
+	reader := bufio.NewReader(os.Stdin)
+	continuar, _ := reader.ReadString('\n')
+
+	continuar = strings.ToLower(strings.TrimSpace(continuar))
+
+	if continuar != "s" && continuar != "sim" && continuar != "" {
+		return true, e
+	}
+
 	//TODO: Opção de ignorar arquivos de determinadas extensões
 
 	if e != nil {
@@ -98,6 +107,6 @@ func showAllFiles(files []os.FileInfo) {
 	for _, file := range files {
 		lista = append(lista, file.Name())
 	}
-
+	fmt.Println("Os seguintes arquivos serão renomeados: ")
 	fmt.Println(lista)
 }
