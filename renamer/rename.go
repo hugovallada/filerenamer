@@ -28,8 +28,12 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 		return true, e
 	}
 
+	fmt.Println("Digite as extensões dos arquivos que quer renomear.(Deixar em branco renomeará todos os arquivos) - Separar por virgula")
+	extensoes, _ := reader.ReadString('\n')
+
+	listExt := splitExtensions(extensoes)
+
 	//TODO: Opção de selecionar extensões específicas para serem renomeadas, em branco, renomeará tudo.
-	//NOTE: Usuário deve digitar as extensoes q quer utilizar e separar por virgula
 	if e != nil {
 		return false, e
 	}
@@ -44,6 +48,10 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 			arquivoModificado = fmt.Sprintf("%s/%04d%s", caminho, contador, ext)
 		} else {
 			arquivoModificado = fmt.Sprintf("%s/%d-%s%s", caminho, contador, novoNome, ext)
+		}
+
+		if existsInSlice(ext, listExt) {
+			fmt.Println("Pronto para a operação")
 		}
 
 		e := os.Rename(caminhoArquivo, arquivoModificado)
@@ -115,4 +123,39 @@ func showAllFiles(files []os.FileInfo) {
 	}
 
 	fmt.Println()
+}
+
+func splitExtensions(extensions string) []string {
+	var listExt []string
+
+	listExtensions := strings.Split(extensions, ",")
+
+	for _, ext := range listExtensions {
+		listExt = append(listExt, strings.TrimSpace(strings.ToLower(ext)))
+	}
+	return listExt
+}
+
+func existsInSlice(searchValue string, searchableSlice []string) bool {
+
+	if checkIfSliceIsEmpty(searchableSlice) {
+		return true
+	}
+
+	for _, value := range searchableSlice {
+		if searchValue == value {
+			return true
+		}
+	}
+	return false
+}
+
+func checkIfSliceIsEmpty(sliceCheck []string) bool {
+	empty := true
+	for _, val := range sliceCheck {
+		if val != "" {
+			empty = false
+		}
+	}
+	return empty
 }
