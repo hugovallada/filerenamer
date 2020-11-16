@@ -33,7 +33,6 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 
 	listExt := splitExtensions(extensoes)
 
-	//TODO: Opção de selecionar extensões específicas para serem renomeadas, em branco, renomeará tudo.
 	if e != nil {
 		return false, e
 	}
@@ -51,14 +50,12 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 		}
 
 		if existsInSlice(ext, listExt) {
-			fmt.Println("Pronto para a operação")
+			e := os.Rename(caminhoArquivo, arquivoModificado)
+			if e != nil {
+				return false, e
+			}
 		}
 
-		e := os.Rename(caminhoArquivo, arquivoModificado)
-
-		if e != nil {
-			return false, e
-		}
 		contador++
 	}
 
