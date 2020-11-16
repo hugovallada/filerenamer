@@ -28,8 +28,8 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 		return true, e
 	}
 
-	//TODO: Opção de ignorar arquivos de determinadas extensões
-	//NOTE: Usuário deve digitar as extensoes q quer ignorar e separar por virgula
+	//TODO: Opção de selecionar extensões específicas para serem renomeadas, em branco, renomeará tudo.
+	//NOTE: Usuário deve digitar as extensoes q quer utilizar e separar por virgula
 	if e != nil {
 		return false, e
 	}
@@ -107,7 +107,8 @@ func showAllFiles(files []os.FileInfo) {
 	for _, file := range files {
 		lista = append(lista, file.Name())
 	}
-	fmt.Println("Os seguintes arquivos serão renomeados: ")
+
+	fmt.Printf("Os seguinte arquivos serão renomeados: (%d arquivos)\n", len(lista))
 
 	for index, arch := range lista {
 		fmt.Printf("%d - %s\n", index, arch)
