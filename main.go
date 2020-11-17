@@ -16,6 +16,8 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 
+	fmt.Println("Bem vindo ao FileRenamer - Versão atual: 2.0-RC1")
+
 	fmt.Println("Deseja trabalhar com um arquivo(f) ou com um diretório(d/dir)?")
 	opt, _ := reader.ReadString('\n')
 
