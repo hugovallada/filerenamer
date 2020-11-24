@@ -16,8 +16,22 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 	contador := 0
 	files, e := ioutil.ReadDir(caminho)
 
-	//TODO: Fazer a listagem dos arquivos a serem renomeados
-	//TODO: Opção de ignorar arquivos de determinadas extensões
+	showAllFiles(files)
+
+	fmt.Println("Deseja continuar com a renomeação ?(s, sim ou deixe em branco para continuar)")
+	reader := bufio.NewReader(os.Stdin)
+	continuar, _ := reader.ReadString('\n')
+
+	continuar = strings.ToLower(strings.TrimSpace(continuar))
+
+	if continuar != "s" && continuar != "sim" && continuar != "" {
+		return true, e
+	}
+
+	fmt.Println("Digite as extensões dos arquivos que quer renomear.(Deixar em branco renomeará todos os arquivos) - Separar por virgula")
+	extensoes, _ := reader.ReadString('\n')
+
+	listExt := splitExtensions(extensoes)
 
 	if e != nil {
 		return false, e
@@ -35,11 +49,13 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 			arquivoModificado = fmt.Sprintf("%s/%d-%s%s", caminho, contador, novoNome, ext)
 		}
 
-		e := os.Rename(caminhoArquivo, arquivoModificado)
-
-		if e != nil {
-			return false, e
+		if existsInSlice(ext, listExt) {
+			e := os.Rename(caminhoArquivo, arquivoModificado)
+			if e != nil {
+				return false, e
+			}
 		}
+
 		contador++
 	}
 
@@ -88,4 +104,55 @@ func openExplorer(caminho string) {
 	} else {
 		fmt.Println("Não foi possível iniciar o file explorer")
 	}
+}
+
+func showAllFiles(files []os.FileInfo) {
+	var lista []string
+
+	for _, file := range files {
+		lista = append(lista, file.Name())
+	}
+
+	fmt.Printf("Os seguinte arquivos serão renomeados: (%d arquivos)\n", len(lista))
+
+	for index, arch := range lista {
+		fmt.Printf("%d - %s\n", index, arch)
+	}
+
+	fmt.Println()
+}
+
+func splitExtensions(extensions string) []string {
+	var listExt []string
+
+	listExtensions := strings.Split(extensions, ",")
+
+	for _, ext := range listExtensions {
+		listExt = append(listExt, strings.TrimSpace(strings.ToLower(ext)))
+	}
+	return listExt
+}
+
+func existsInSlice(searchValue string, searchableSlice []string) bool {
+
+	if checkIfSliceIsEmpty(searchableSlice) {
+		return true
+	}
+
+	for _, value := range searchableSlice {
+		if searchValue == value {
+			return true
+		}
+	}
+	return false
+}
+
+func checkIfSliceIsEmpty(sliceCheck []string) bool {
+	empty := true
+	for _, val := range sliceCheck {
+		if val != "" {
+			empty = false
+		}
+	}
+	return empty
 }
