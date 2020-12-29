@@ -156,3 +156,15 @@ func checkIfSliceIsEmpty(sliceCheck []string) bool {
 	}
 	return empty
 }
+
+// LinuxHomeDirectoryReplace exported
+func LinuxHomeDirectoryReplace(caminho string) string {
+	if caminho[0] == 126 {
+		fmt.Println("Irei executar")
+		newCaminho := fmt.Sprintf("/home/hugovallada%s", caminho[1:])
+
+		return newCaminho
+	}
+
+	return caminho
+}
