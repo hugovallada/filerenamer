@@ -26,11 +26,13 @@ func main() {
 	if opt == "d" || opt == "dir" {
 		fmt.Println("Qual o diretório onde os arquivos serão renomeados ?")
 		caminho, _ = reader.ReadString('\n')
+		
+		
 
 		fmt.Println("Qual o nome base do arquivos ? Deixe em branco para utilizar um contador")
 		novoNome, _ = reader.ReadString('\n')
 
-		caminho, _ = filepath.Abs(strings.TrimSpace(caminho))
+		caminho, _ = filepath.Abs(strings.TrimSpace(renamer.LinuxHomeDirectoryReplace(caminho)))
 		novoNome = strings.TrimSpace(novoNome)
 
 		renamer.BulkRenamer(caminho, novoNome)
