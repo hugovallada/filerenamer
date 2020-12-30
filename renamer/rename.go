@@ -18,8 +18,27 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 
 	showAllFiles(files)
 
-	fmt.Println("Deseja continuar com a renomeação ?(s, sim ou deixe em branco para continuar)")
 	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Println("Digite as extensões dos arquivos que quer renomear.(Deixar em branco renomeará todos os arquivos) - Separar por virgula")
+	extensoes, _ := reader.ReadString('\n')
+
+	if e != nil {
+		return false, e
+	}
+
+	listExt := splitExtensions(extensoes)
+	filesWithExt := saveFilesWithExtension(files, listExt)
+
+	fmt.Printf("Os seguintes arquivos serão renomeados: (%d arquivos)\n", len(filesWithExt))
+	for index, fileToRename := range filesWithExt {
+		fmt.Printf("%d --- %s\n", index, fileToRename)
+	}
+
+	fmt.Println()
+
+	fmt.Println("Deseja continuar com a renomeação ?(s, sim ou deixe em branco para continuar)")
+
 	continuar, _ := reader.ReadString('\n')
 
 	continuar = strings.ToLower(strings.TrimSpace(continuar))
@@ -27,21 +46,6 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 	if continuar != "s" && continuar != "sim" && continuar != "" {
 		return true, e
 	}
-
-	fmt.Println("Digite as extensões dos arquivos que quer renomear.(Deixar em branco renomeará todos os arquivos) - Separar por virgula")
-	extensoes, _ := reader.ReadString('\n')
-
-	listExt := splitExtensions(extensoes)
-
-	if e != nil {
-		return false, e
-	}
-
-	fmt.Println("Arquivos renomeados pela extensão")
-	for index, fileToRename := range saveFilesWithExtension(files, listExt) {
-		fmt.Printf("%d --- %s\n", index, fileToRename)
-	}
-	fmt.Println()
 
 	for _, file := range files {
 		var arquivoModificado string
@@ -112,7 +116,6 @@ func openExplorer(caminho string) {
 	}
 }
 
-// TODO: Listar apenas os arquivos com as extensões passadas
 func showAllFiles(files []os.FileInfo) {
 	var lista []string
 
@@ -120,7 +123,7 @@ func showAllFiles(files []os.FileInfo) {
 		lista = append(lista, file.Name())
 	}
 
-	fmt.Printf("Os seguinte arquivos serão renomeados: (%d arquivos)\n", len(lista))
+	fmt.Printf("O diretório possui os seguintes arquivos: (%d arquivos)\n", len(lista))
 
 	for index, arch := range lista {
 		fmt.Printf("%d - %s\n", index, arch)
