@@ -18,23 +18,33 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 
 	showAllFiles(files)
 
-	fmt.Println("Deseja continuar com a renomeação ?(s, sim ou deixe em branco para continuar)")
 	reader := bufio.NewReader(os.Stdin)
+
+	fmt.Println("Digite as extensões dos arquivos que quer renomear.(Deixar em branco renomeará todos os arquivos) - Separar por virgula")
+	extensoes, _ := reader.ReadString('\n')
+
+	if e != nil {
+		return false, e
+	}
+
+	listExt := splitExtensions(extensoes)
+	filesWithExt := saveFilesWithExtension(files, listExt)
+
+	fmt.Printf("Os seguintes arquivos serão renomeados: (%d arquivos)\n", len(filesWithExt))
+	for index, fileToRename := range filesWithExt {
+		fmt.Printf("%d --- %s\n", index, fileToRename)
+	}
+
+	fmt.Println()
+
+	fmt.Println("Deseja continuar com a renomeação ?(s, sim ou deixe em branco para continuar)")
+
 	continuar, _ := reader.ReadString('\n')
 
 	continuar = strings.ToLower(strings.TrimSpace(continuar))
 
 	if continuar != "s" && continuar != "sim" && continuar != "" {
 		return true, e
-	}
-
-	fmt.Println("Digite as extensões dos arquivos que quer renomear.(Deixar em branco renomeará todos os arquivos) - Separar por virgula")
-	extensoes, _ := reader.ReadString('\n')
-
-	listExt := splitExtensions(extensoes)
-
-	if e != nil {
-		return false, e
 	}
 
 	for _, file := range files {
@@ -113,13 +123,39 @@ func showAllFiles(files []os.FileInfo) {
 		lista = append(lista, file.Name())
 	}
 
-	fmt.Printf("Os seguinte arquivos serão renomeados: (%d arquivos)\n", len(lista))
+	fmt.Printf("O diretório possui os seguintes arquivos: (%d arquivos)\n", len(lista))
 
 	for index, arch := range lista {
 		fmt.Printf("%d - %s\n", index, arch)
 	}
 
 	fmt.Println()
+}
+
+func saveFilesWithExtension(files []os.FileInfo, extensions []string) []string {
+	var listaFilesExt []string
+
+	if checkIfSliceIsEmpty(extensions) {
+		for _, file := range files {
+			listaFilesExt = append(listaFilesExt, file.Name())
+		}
+		return listaFilesExt
+	}
+
+	for _, file := range files {
+		insert := false
+		for _, ext := range extensions {
+			if filepath.Ext(file.Name()) == ext {
+				insert = true
+			}
+		}
+
+		if insert {
+			listaFilesExt = append(listaFilesExt, file.Name())
+		}
+	}
+
+	return listaFilesExt
 }
 
 func splitExtensions(extensions string) []string {
