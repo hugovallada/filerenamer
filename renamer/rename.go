@@ -37,6 +37,12 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 		return false, e
 	}
 
+	fmt.Println("Arquivos renomeados pela extensão")
+	for index, fileToRename := range saveFilesWithExtension(files, listExt) {
+		fmt.Printf("%d --- %s\n", index, fileToRename)
+	}
+	fmt.Println()
+
 	for _, file := range files {
 		var arquivoModificado string
 
@@ -106,6 +112,7 @@ func openExplorer(caminho string) {
 	}
 }
 
+// TODO: Listar apenas os arquivos com as extensões passadas
 func showAllFiles(files []os.FileInfo) {
 	var lista []string
 
@@ -120,6 +127,32 @@ func showAllFiles(files []os.FileInfo) {
 	}
 
 	fmt.Println()
+}
+
+func saveFilesWithExtension(files []os.FileInfo, extensions []string) []string {
+	var listaFilesExt []string
+
+	if checkIfSliceIsEmpty(extensions) {
+		for _, file := range files {
+			listaFilesExt = append(listaFilesExt, file.Name())
+		}
+		return listaFilesExt
+	}
+
+	for _, file := range files {
+		insert := false
+		for _, ext := range extensions {
+			if filepath.Ext(file.Name()) == ext {
+				insert = true
+			}
+		}
+
+		if insert {
+			listaFilesExt = append(listaFilesExt, file.Name())
+		}
+	}
+
+	return listaFilesExt
 }
 
 func splitExtensions(extensions string) []string {
