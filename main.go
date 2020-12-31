@@ -44,7 +44,7 @@ func main() {
 		fmt.Println("Qual o novo nome?")
 		novoNome, _ = reader.ReadString('\n')
 
-		caminho, _ = filepath.Abs(strings.TrimSpace(caminho))
+		caminho, _ = filepath.Abs(strings.TrimSpace(renamer.LinuxHomeDirectoryReplace(caminho)))
 		novoNome = strings.TrimSpace(novoNome)
 
 		renamer.SingleRenamer(caminho, novoNome)

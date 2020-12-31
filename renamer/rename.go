@@ -50,20 +50,18 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 	for _, file := range files {
 		var arquivoModificado string
 
-		ext := filepath.Ext(file.Name())
 		caminhoArquivo := fmt.Sprintf("%s/%s", caminho, file.Name())
 
 		if novoNome == "" {
-			arquivoModificado = fmt.Sprintf("%s/%04d%s", caminho, contador, ext)
+			arquivoModificado = fmt.Sprintf("%04d", contador)
 		} else {
-			arquivoModificado = fmt.Sprintf("%s/%d-%s%s", caminho, contador, novoNome, ext)
+			arquivoModificado = fmt.Sprintf("%d-%s", contador, novoNome)
 		}
 
-		if existsInSlice(ext, listExt) {
-			e := os.Rename(caminhoArquivo, arquivoModificado)
-			if e != nil {
-				return false, e
-			}
+		_, e := renameFile(caminhoArquivo, arquivoModificado, listExt)
+
+		if e != nil {
+			return false, e
 		}
 
 		contador++
@@ -77,12 +75,11 @@ func BulkRenamer(caminho, novoNome string) (bool, error) {
 // SingleRenamer - renomeia um único arquivo
 func SingleRenamer(caminho, novoNome string) (bool, error) {
 	base := filepath.Dir(caminho)
-	ext := filepath.Ext(caminho)
-	novoArquivo := fmt.Sprintf("%s/%s%s", base, novoNome, ext)
 
-	e := os.Rename(caminho, novoArquivo)
+	_, e := renameFile(caminho, novoNome, nil)
 
 	if e != nil {
+		fmt.Println(e)
 		return false, e
 	}
 
@@ -204,4 +201,33 @@ func LinuxHomeDirectoryReplace(caminho string) string {
 	}
 
 	return caminho
+}
+
+func renameFile(file, novoNome string, listExt []string) (bool, error) {
+
+	ext := filepath.Ext(file)
+	caminho := LinuxHomeDirectoryReplace(filepath.Dir(file))
+
+	novoArquivo := fmt.Sprintf("%s/%s%s", caminho, novoNome, ext)
+
+	if listExt != nil {
+		if existsInSlice(ext, listExt) {
+			e := os.Rename(file, novoArquivo)
+
+			if e != nil {
+				return false, e
+			}
+		}
+
+		return true, nil
+	}
+	e := os.Rename(file, novoArquivo)
+
+	if e != nil {
+		fmt.Println(e)
+		return false, e
+	}
+
+	return true, nil
+
 }
